@@ -16,5 +16,11 @@ namespace Amazon.Domain.Entities
         {
             Name = name;
         }
+
+        public void UpdateName(string newName) {
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new ArgumentException("Name cannot be empty.");
+            Name = newName;
+        }
     }
 }

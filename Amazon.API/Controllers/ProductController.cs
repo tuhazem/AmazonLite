@@ -35,6 +35,9 @@ namespace Amazon.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductDTO productdto)
         {
+            if(!ModelState.IsValid) return 
+                    BadRequest(ModelState);
+
             await productService.CreateProductAsync(productdto);
             return Ok();
         }
