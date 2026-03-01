@@ -1,4 +1,4 @@
-﻿using Amazon.Application.DTOs;
+using Amazon.Application.DTOs;
 using Amazon.Application.Interfaces;
 using Amazon.Domain.Entities;
 using AutoMapper;
@@ -32,6 +32,7 @@ namespace Amazon.Application.Services
         {
             var cat = await Catrepo.GetByIdAsync(id);
             if(cat == null) throw new Exception("Category not found");
+            if(cat.Products.Any()) throw new Exception("Category has products and cannot be deleted");
             Catrepo.Delete(cat);
         }
 

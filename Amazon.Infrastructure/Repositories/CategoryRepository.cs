@@ -1,4 +1,4 @@
-﻿using Amazon.Application.Interfaces;
+using Amazon.Application.Interfaces;
 using Amazon.Domain.Entities;
 using Amazon.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -32,12 +32,12 @@ namespace Amazon.Infrastructure.Repositories
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await context.Categories.ToListAsync();
+            return await context.Categories.Include(c => c.Products).ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)
         {
-            return await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            return await context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public void Update(Category category)

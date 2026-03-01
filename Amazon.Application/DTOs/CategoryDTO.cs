@@ -11,7 +11,9 @@ namespace Amazon.Application.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-        
+
+       public IEnumerable<ProductDTO> Products { get; set; } = null!;
+
     }
 
     public class CreateCategoryDTO
