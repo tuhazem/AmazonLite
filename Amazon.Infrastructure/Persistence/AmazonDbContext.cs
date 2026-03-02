@@ -18,6 +18,8 @@ namespace Amazon.Infrastructure.Persistence
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Cart> Carts => Set<Cart>();
         public DbSet<CartItem> CartItems => Set<CartItem>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +38,11 @@ namespace Amazon.Infrastructure.Persistence
                 .HasOne(i => i.Product)
                 .WithMany()
                 .HasForeignKey(i => i.ProductId);
+
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.Items)
+                .WithOne(i => i.Order)
+                .HasForeignKey(i => i.OrderId);
         }
     }
 }

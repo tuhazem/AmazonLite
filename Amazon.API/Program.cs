@@ -19,10 +19,13 @@ builder.Services.AddScoped<CategoryService>();
 
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 builder.Services.AddAutoMapper(typeof(CategoryProfile));
 builder.Services.AddAutoMapper(typeof(CartProfile));
+builder.Services.AddAutoMapper(typeof(OrderProfile));
 
 // Add DbContext
 builder.Services.AddDbContext<AmazonDbContext>(options =>
@@ -43,6 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<Amazon.API.Middleware.ExceptionHandlingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
