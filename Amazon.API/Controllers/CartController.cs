@@ -20,7 +20,7 @@ namespace Amazon.API.Controllers
         public async Task<IActionResult> Create()
         {
             var id = await cartService.CreateCartAsync();
-            return Ok(new { id });
+            return CreatedAtAction(nameof(Get), new { id }, null);
         }
 
         [HttpGet("{id}")]

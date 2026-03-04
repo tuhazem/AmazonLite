@@ -37,10 +37,10 @@ namespace Amazon.Application.Services
         public async Task AddItemAsync(int cartId, int productId, int quantity)
         {
             var cart = await cartRepository.GetByIdAsync(cartId);
-            if (cart == null) throw new System.Exception("Cart not found");
+            if (cart == null) throw new KeyNotFoundException("Cart not found");
 
             var product = await productRepository.GetByIdAsync(productId);
-            if (product == null) throw new System.Exception("Product not found");
+            if (product == null) throw new KeyNotFoundException("Product not found");
 
             cart.AddItem(product.Id, product.Price, quantity);
             cartRepository.Update(cart);
@@ -49,7 +49,7 @@ namespace Amazon.Application.Services
         public async Task UpdateItemAsync(int cartId, int productId, int quantity)
         {
             var cart = await cartRepository.GetByIdAsync(cartId);
-            if (cart == null) throw new System.Exception("Cart not found");
+            if (cart == null) throw new KeyNotFoundException("Cart not found");
 
             cart.UpdateItem(productId, quantity);
             cartRepository.Update(cart);
@@ -58,7 +58,7 @@ namespace Amazon.Application.Services
         public async Task RemoveItemAsync(int cartId, int productId)
         {
             var cart = await cartRepository.GetByIdAsync(cartId);
-            if (cart == null) throw new System.Exception("Cart not found");
+            if (cart == null) throw new KeyNotFoundException("Cart not found");
 
             cart.RemoveItem(productId);
             cartRepository.Update(cart);
@@ -67,7 +67,7 @@ namespace Amazon.Application.Services
         public async Task ClearAsync(int cartId)
         {
             var cart = await cartRepository.GetByIdAsync(cartId);
-            if (cart == null) throw new System.Exception("Cart not found");
+            if (cart == null) throw new KeyNotFoundException("Cart not found");
 
             cart.Clear();
             cartRepository.Update(cart);

@@ -26,14 +26,14 @@ namespace Amazon.Application.Services
         public async Task<OrderDTO> CheckoutAsync(int cartId)
         {
             var cart = await cartRepository.GetByIdAsync(cartId);
-            if (cart == null) throw new System.Exception("Cart not found");
-            if (!cart.Items.Any()) throw new System.Exception("Cart is empty");
+            if (cart == null) throw new KeyNotFoundException("Cart not found");
+            if (!cart.Items.Any()) throw new InvalidOperationException("Cart is empty");
 
             var order = new Order();
             foreach (var item in cart.Items)
             {
                 var product = await productRepository.GetByIdAsync(item.ProductId);
-                if (product == null) throw new System.Exception("Product not found");
+                if (product == null) throw new KeyNotFoundException("Product not found");
                 product.ReduceStock(item.Quantity);
                 order.AddItem(product.Id, product.Name, product.Price, item.Quantity);
             }

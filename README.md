@@ -28,7 +28,7 @@
 ## Cart API
 - POST `api/Cart`
   - Creates a new cart
-  - Response: `{ "id": number }`
+  - Response: `201 Created` + `Location: /api/Cart/{id}`
 - GET `api/Cart/{id}`
   - Returns cart with items
 - POST `api/Cart/{id}/items`
@@ -52,6 +52,33 @@
 - GET `api/Order/{id}`
   - Returns order with items and total
 
+## Product API
+- GET `api/Product`
+  - Query options:
+    - `pageNumber` (default 1), `pageSize` (default 20)
+    - `search` (filters by name contains, case-insensitive)
+    - `categoryId` (optional filter by category)
+    - `sortBy` = `name` | `price`, `sortDir` = `asc` | `desc`
+  - Filtering/sorting/paging is executed in the repository for performance
+  - Returns a `PagedResult<ProductDTO>`: items, totalCount, pageNumber, pageSize
+- POST `api/Product`
+  - Creates a product
+  - Response: `201 Created` + `Location: /api/Product/{id}`
+- GET `api/Product/{id}` → returns product or `404`
+- PUT `api/Product/{id}` → update price, returns `204`
+- DELETE `api/Product/{id}` → returns `204`
+
+## Category API
+- GET `api/Category` → list categories
+- GET `api/Category/{id}` → returns category or `404`
+- POST `api/Category`
+  - Creates a category
+  - Response: `201 Created` + `Location: /api/Category/{id}`
+- PUT `api/Category/{id}` → update, returns `204`
+- DELETE `api/Category/{id}`
+  - Returns `204`
+  - Returns `409 Conflict` if the category has products
+
 ## Exception Handling
 - Global middleware maps exceptions to ProblemDetails JSON
 - Status mapping:
@@ -61,6 +88,12 @@
   - Message contains “not found” → 404
   - Message contains “cannot be deleted” or “not enough stock” → 409
   - Others → 500
+  
+### Service Exception Conventions
+- Services throw:
+  - `KeyNotFoundException` when an entity is missing (e.g., product/category/cart)
+  - `InvalidOperationException` for business constraints (e.g., delete category with products, empty cart on checkout)
+  - `ArgumentException` for invalid inputs (e.g., non‑positive quantity)
 
 ## Database Migrations
 - Create tables for Cart:

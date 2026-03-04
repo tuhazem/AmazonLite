@@ -21,18 +21,18 @@ namespace Amazon.Application.Services
         public ICategoryRepository Catrepo { get; }
         public IMapper Mapper { get; }
 
-        public async Task AddAsync(CreateCategoryDTO category)
+        public async Task<int> AddAsync(CreateCategoryDTO category)
         {
             var cat = Mapper.Map<Category>(category);
             await Catrepo.AddAsync(cat);    
-            
+            return cat.Id;
         }
 
         public async Task Delete(int id)
         {
             var cat = await Catrepo.GetByIdAsync(id);
-            if(cat == null) throw new Exception("Category not found");
-            if(cat.Products.Any()) throw new Exception("Category has products and cannot be deleted");
+            if(cat == null) throw new KeyNotFoundException("Category not found");
+            if(cat.Products.Any()) throw new InvalidOperationException("Category has products and cannot be deleted");
             Catrepo.Delete(cat);
         }
 
@@ -45,14 +45,13 @@ namespace Amazon.Application.Services
         public async Task<CategoryDTO?> GetByIdAsync(int id)
         {
             var cat = await Catrepo.GetByIdAsync(id);
-            if(cat == null) throw new Exception("Category not found");
-            return Mapper.Map<CategoryDTO>(cat);
+            return cat == null ? null : Mapper.Map<CategoryDTO>(cat);
         }
 
         public async Task UpdateAsync(int id, UpdateCategoryDTO category)
         {
             var cat = await Catrepo.GetByIdAsync(id);
-            if(cat == null) throw new Exception("Category not found");
+            if(cat == null) throw new KeyNotFoundException("Category not found");
 
             Mapper.Map(category, cat);
             Catrepo.Update(cat);

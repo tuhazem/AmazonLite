@@ -1,4 +1,4 @@
-﻿using Amazon.Application.DTOs;
+using Amazon.Application.DTOs;
 using Amazon.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace Amazon.Application.Interfaces
     {
         Task<IEnumerable<CategoryDTO>> GetAllAsync();
         Task<CategoryDTO?> GetByIdAsync(int id);
-        Task AddAsync(CreateCategoryDTO category);
+        Task<int> AddAsync(CreateCategoryDTO category);
 
         Task UpdateAsync(int id, UpdateCategoryDTO category);
         Task Delete(int id);

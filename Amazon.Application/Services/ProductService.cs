@@ -1,4 +1,4 @@
-﻿using Amazon.Application.DTOs;
+using Amazon.Application.DTOs;
 using Amazon.Application.Interfaces;
 using Amazon.Domain.Entities;
 using Amazon.Domain.Interfaces;
@@ -22,16 +22,31 @@ namespace Amazon.Application.Services
             this.mapper = mapper;
         }
 
-        public async Task CreateProductAsync(CreateProductDTO product)
+        public async Task<int> CreateProductAsync(CreateProductDTO product)
         {
             var newproduct = mapper.Map<Product>(product);
             await productrepo.AddAsync(newproduct);
+            return newproduct.Id;
+        }
+        public async Task<PagedResult<ProductDTO>> SearchProductsAsync(ProductListQuery query)
+        {
+            var pageNumber = query.PageNumber <= 0 ? 1 : query.PageNumber;
+            var pageSize = query.PageSize <= 0 ? 20 : query.PageSize;
+            var desc = query.SortDir?.ToLower() == "desc";
+            var (items, total) = await productrepo.SearchAsync(query.Search, query.CategoryId, query.SortBy, desc, pageNumber, pageSize);
+            return new PagedResult<ProductDTO>
+            {
+                Items = mapper.Map<IEnumerable<ProductDTO>>(items),
+                TotalCount = total,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
         public async Task DeleteProductAsync(int id)
         {
             var product = await productrepo.GetByIdAsync(id);
-            if(product == null) throw new Exception("Product not found");
+            if(product == null) throw new KeyNotFoundException("Product not found");
 
             productrepo.Delete(product);
         }
@@ -51,7 +66,7 @@ namespace Amazon.Application.Services
         public async Task UpdateProductPriceAsync(int id, decimal newprice)
         {
             var product = await productrepo.GetByIdAsync(id);
-            if(product == null) throw new Exception("Product not found");
+            if(product == null) throw new KeyNotFoundException("Product not found");
 
             product.UpdatePrice(newprice);
             productrepo.Update(product);

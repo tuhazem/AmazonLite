@@ -1,4 +1,4 @@
-﻿using Amazon.Domain.Entities;
+using Amazon.Domain.Entities;
 using Amazon.Domain.Interfaces;
 using Amazon.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +44,35 @@ namespace Amazon.Infrastructure.Repositories
         {
             context.Products.Update(product);
             context.SaveChanges();
+        }
+
+        public async Task<(IEnumerable<Product> Items, int TotalCount)> SearchAsync(string? search, int? categoryId, string? sortBy, bool desc, int pageNumber, int pageSize)
+        {
+            var query = context.Products
+                .Include(p => p.Category)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var s = search.ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(s));
+            }
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            query = (sortBy?.ToLower()) switch
+            {
+                "name" => desc ? query.OrderByDescending(p => p.Name) : query.OrderBy(p => p.Name),
+                "price" => desc ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+                _ => query
+            };
+
+            var total = await query.CountAsync();
+            var skip = (pageNumber - 1) * pageSize;
+            var items = await query.Skip(skip).Take(pageSize).ToListAsync();
+            return (items, total);
         }
     }
 }

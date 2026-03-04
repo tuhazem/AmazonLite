@@ -27,7 +27,7 @@ namespace Amazon.Infrastructure.Repositories
         public void Delete(Category category)
         {
             context.Categories.Remove(category);
-            context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync()
@@ -43,7 +43,7 @@ namespace Amazon.Infrastructure.Repositories
         public void Update(Category category)
         {
             context.Categories.Update(category);
-            context.SaveChangesAsync();
+            context.SaveChanges();
         }
     }
 }

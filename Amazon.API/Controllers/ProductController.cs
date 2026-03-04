@@ -1,4 +1,4 @@
-﻿using Amazon.Application.DTOs;
+using Amazon.Application.DTOs;
 using Amazon.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +17,19 @@ namespace Amazon.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20, [FromQuery] string? search = null, [FromQuery] int? categoryId = null, [FromQuery] string? sortBy = null, [FromQuery] string sortDir = "asc")
         {
-
-            var products = await productService.GetAllProductsAsync();
-            return Ok(products);
+            var query = new Amazon.Application.DTOs.ProductListQuery
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Search = search,
+                CategoryId = categoryId,
+                SortBy = sortBy,
+                SortDir = sortDir
+            };
+            var result = await productService.SearchProductsAsync(query);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -35,11 +43,10 @@ namespace Amazon.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductDTO productdto)
         {
-            if(!ModelState.IsValid) return 
-                    BadRequest(ModelState);
+            if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            await productService.CreateProductAsync(productdto);
-            return Ok();
+            var id = await productService.CreateProductAsync(productdto);
+            return CreatedAtAction(nameof(GetById), new { id }, null);
         }
 
         [HttpDelete("{id}")]

@@ -1,4 +1,4 @@
-﻿using Amazon.Domain.Entities;
+using Amazon.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,6 @@ namespace Amazon.Domain.Interfaces
         Task AddAsync(Product product);
         void Update(Product product);
         void Delete(Product product);
-        
+        Task<(IEnumerable<Product> Items, int TotalCount)> SearchAsync(string? search, int? categoryId, string? sortBy, bool desc, int pageNumber, int pageSize);
     }
 }

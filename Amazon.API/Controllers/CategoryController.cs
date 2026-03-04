@@ -1,4 +1,4 @@
-﻿using Amazon.Application.DTOs;
+using Amazon.Application.DTOs;
 using Amazon.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,8 +38,8 @@ namespace Amazon.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await service.AddAsync(categoryCreateDto);
-            return Ok();
+            var id = await service.AddAsync(categoryCreateDto);
+            return CreatedAtAction(nameof(GetById), new { id }, null);
 
         }
 

@@ -1,4 +1,4 @@
-﻿using Amazon.Application.DTOs;
+using Amazon.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,9 @@ namespace Amazon.Application.Interfaces
     {
         Task<IEnumerable<ProductDTO>> GetAllProductsAsync();
         Task<ProductDTO?> GetProductByIdAsync(int id);
-        Task CreateProductAsync(CreateProductDTO product);
+        Task<int> CreateProductAsync(CreateProductDTO product);
         Task UpdateProductPriceAsync(int id, decimal newprice);
         Task DeleteProductAsync(int id);
+        Task<PagedResult<ProductDTO>> SearchProductsAsync(ProductListQuery query);
     }
 }
