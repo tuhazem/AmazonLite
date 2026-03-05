@@ -112,3 +112,81 @@
 - Cart does not reserve stock; stock is reduced at checkout
 - Unit prices on cart items snapshot current product price; orders store product name and price at checkout
 
+## Quick Start Examples
+- Create Category
+  - Request:
+
+    ```http
+    POST /api/Category
+    Content-Type: application/json
+
+    { "name": "Electronics" }
+    ```
+  - Response: `201 Created` + `Location: /api/Category/{id}`
+
+- Create Product
+  - Request:
+
+    ```http
+    POST /api/Product
+    Content-Type: application/json
+
+    {
+      "name": "Phone X",
+      "description": "128GB",
+      "price": 999.99,
+      "stockQuantity": 25,
+      "categoryId": 1
+    }
+    ```
+  - Response: `201 Created` + `Location: /api/Product/{id}`
+
+- Create Cart and Add Item
+  - Create cart:
+
+    ```http
+    POST /api/Cart
+    ```
+  - Response: `201 Created` + `Location: /api/Cart/{id}`
+  - Add item:
+
+    ```http
+    POST /api/Cart/{id}/items
+    Content-Type: application/json
+
+    { "productId": 1, "quantity": 2 }
+    ```
+  - Response: `204 No Content`
+
+- Checkout
+
+  ```http
+  POST /api/Order/checkout/{cartId}
+  ```
+
+  - Response: `200 OK` with `OrderDTO` (items + total)
+
+## Pagination & Queries
+- `GET /api/Product` supports query parameters:
+  - `pageNumber`, `pageSize`, `search`, `categoryId`, `sortBy=name|price`, `sortDir=asc|desc`
+- Implementation detail:
+  - Filtering/sorting/paging is executed in the repository (EF Core) for performance and clean architecture boundaries.
+  - Controller maps query → application `ProductListQuery`; service returns `PagedResult<ProductDTO>`.
+
+## Error Responses (ProblemDetails)
+- Format:
+
+  ```json
+  {
+    "title": "An error occurred.",
+    "status": 404,
+    "detail": "Product not found"
+  }
+  ```
+- Mapped by global middleware from exceptions:
+  - `KeyNotFoundException` → 404
+  - `InvalidOperationException` → 409
+  - `ArgumentException` → 400
+  - Others → 500
+
+
