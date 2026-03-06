@@ -19,16 +19,17 @@ namespace Amazon.Application.DTOs
 
     public class AddCartItemDTO
     {
-        [Required]
+        [Required(ErrorMessage = "ProductId is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid ProductId.")]
         public int ProductId { get; set; }
 
-        [Range(1, int.MaxValue)]
+        [Range(1, 100, ErrorMessage = "Quantity must be between 1 and 100.")]
         public int Quantity { get; set; }
     }
 
     public class UpdateCartItemDTO
     {
-        [Range(1, int.MaxValue)]
+        [Range(1, 100, ErrorMessage = "Quantity must be between 1 and 100.")]
         public int Quantity { get; set; }
     }
 }

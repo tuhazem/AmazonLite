@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,15 +18,15 @@ namespace Amazon.Application.DTOs
 
     public class CreateCategoryDTO
     {
-        [Required(ErrorMessage = "Name is required.")]
-        [StringLength(maximumLength: 50, MinimumLength = 2)]
+        [Required(ErrorMessage = "Category name is required.")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Category name must be between 3 and 50 characters.")]
         public string Name { get; set; } = null!;
     }
 
     public class UpdateCategoryDTO
     {
-        [Required(ErrorMessage = "Name is required.")]
-        [StringLength(maximumLength: 50, MinimumLength = 2)]
+        [Required(ErrorMessage = "Category name is required.")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Category name must be between 3 and 50 characters.")]
         public string Name { get; set; } = null!;
     }
 }
