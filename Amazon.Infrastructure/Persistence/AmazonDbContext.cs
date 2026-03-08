@@ -1,4 +1,5 @@
 using Amazon.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Amazon.Infrastructure.Persistence
 {
-    public class AmazonDbContext : DbContext
+    public class AmazonDbContext : IdentityDbContext<ApplicationUser>
     {
         public AmazonDbContext(DbContextOptions<AmazonDbContext> options): base(options)
         {

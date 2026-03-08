@@ -1,5 +1,6 @@
 using Amazon.Application.DTOs;
 using Amazon.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Amazon.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService service;
@@ -17,6 +19,7 @@ namespace Amazon.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var categories = await service.GetAllAsync();
@@ -24,6 +27,7 @@ namespace Amazon.API.Controllers
 
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var category = await service.GetByIdAsync(id);
