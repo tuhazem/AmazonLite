@@ -19,6 +19,8 @@ namespace Amazon.Domain.Entities
         public int CategoryId { get; private set; }
         public Category Category { get; private set; } = null!;
 
+        public byte[] RowVersion { get; private set; } = null!;
+
 
         public Product(string name , string description , decimal price , int stockQuantity , int categoryId)
         {

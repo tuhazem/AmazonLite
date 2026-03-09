@@ -1,4 +1,5 @@
 using Amazon.Application.Interfaces;
+using Amazon.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -30,6 +31,13 @@ namespace Amazon.API.Controllers
             var order = await orderService.GetOrderAsync(id);
             if (order == null) return NotFound();
             return Ok(order);
+        }
+
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] OrderStatus status)
+        {
+            await orderService.UpdateOrderStatusAsync(id, status);
+            return NoContent();
         }
     }
 }

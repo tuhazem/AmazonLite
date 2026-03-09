@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,9 +25,16 @@ namespace Amazon.API.Middleware
             catch (Exception ex)
             {
                 var status = 500;
+                var title = "An error occurred.";
+
                 if (ex is ArgumentException) status = 400;
                 else if (ex is InvalidOperationException) status = 409;
                 else if (ex is KeyNotFoundException) status = 404;
+                else if (ex is DbUpdateConcurrencyException)
+                {
+                    status = 409;
+                    title = "Concurrency error.";
+                }
                 else
                 {
                     var msg = ex.Message.ToLowerInvariant();
@@ -36,7 +44,7 @@ namespace Amazon.API.Middleware
 
                 var problem = new ProblemDetails
                 {
-                    Title = "An error occurred.",
+                    Title = title,
                     Detail = ex.Message,
                     Status = status
                 };

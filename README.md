@@ -8,6 +8,10 @@
   - Authentication: User registration and login
   - Cart: add/update/remove/clear items
   - Checkout: creates Order from Cart and reduces product stock
+  - **Business Logic Hardening**:
+    - **Transactions**: Atomic checkout flow using `UnitOfWork`.
+    - **Optimistic Concurrency**: `RowVersion` on Products to prevent race conditions.
+    - **Order Lifecycle**: `OrderStatus` enum (Pending, Processing, etc.).
   - Global exception handling returning ProblemDetails JSON
 
 ## Authentication API
@@ -54,6 +58,9 @@
   - Response: `OrderDTO` with items and total
 - GET `api/Order/{id}`
   - Returns order with items and total
+- PUT `api/Order/{id}/status`
+  - Body: `number` (Enum value: 0=Pending, 1=Processing, 2=Shipped, 3=Delivered, 4=Cancelled)
+  - Updates the order status. Returns `204 No Content`.
 
 ## Product API
 - GET `api/Product`

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Amazon.Application.DTOs;
+using Amazon.Domain.Entities;
 
 namespace Amazon.Application.Interfaces
 {
@@ -7,5 +8,6 @@ namespace Amazon.Application.Interfaces
     {
         Task<OrderDTO> CheckoutAsync(int cartId);
         Task<OrderDTO?> GetOrderAsync(int orderId);
+        Task UpdateOrderStatusAsync(int orderId, OrderStatus status);
     }
 }

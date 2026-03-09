@@ -6,7 +6,8 @@ namespace Amazon.Application.Mappings
     {
         public OrderProfile()
         {
-            CreateMap<Domain.Entities.Order, DTOs.OrderDTO>();
+            CreateMap<Domain.Entities.Order, DTOs.OrderDTO>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
             CreateMap<Domain.Entities.OrderItem, DTOs.OrderItemDTO>();
         }
     }

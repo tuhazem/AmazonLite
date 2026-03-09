@@ -8,6 +8,7 @@ namespace Amazon.Application.DTOs
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public decimal Total { get; set; }
+        public string Status { get; set; } = null!;
         public IEnumerable<OrderItemDTO> Items { get; set; } = new List<OrderItemDTO>();
     }
 

@@ -30,6 +30,10 @@ namespace Amazon.Infrastructure.Persistence
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
 
+            modelBuilder.Entity<Product>()
+                .Property(p => p.RowVersion)
+                .IsRowVersion();
+
             modelBuilder.Entity<Cart>()
                 .HasMany(c => c.Items)
                 .WithOne(i => i.Cart)
