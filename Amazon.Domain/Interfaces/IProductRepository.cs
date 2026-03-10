@@ -14,6 +14,15 @@ namespace Amazon.Domain.Interfaces
         Task AddAsync(Product product);
         void Update(Product product);
         void Delete(Product product);
-        Task<(IEnumerable<Product> Items, int TotalCount)> SearchAsync(string? search, int? categoryId, string? sortBy, bool desc, int pageNumber, int pageSize);
+        Task<(IEnumerable<Product> Items, int TotalCount)> SearchAsync(
+            string? search, 
+            int? categoryId, 
+            decimal? minPrice, 
+            decimal? maxPrice, 
+            bool? inStock, 
+            string? sortBy, 
+            bool desc, 
+            int pageNumber, 
+            int pageSize);
     }
 }

@@ -46,7 +46,16 @@ namespace Amazon.Infrastructure.Repositories
             context.SaveChanges();
         }
 
-        public async Task<(IEnumerable<Product> Items, int TotalCount)> SearchAsync(string? search, int? categoryId, string? sortBy, bool desc, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<Product> Items, int TotalCount)> SearchAsync(
+            string? search, 
+            int? categoryId, 
+            decimal? minPrice, 
+            decimal? maxPrice, 
+            bool? inStock, 
+            string? sortBy, 
+            bool desc, 
+            int pageNumber, 
+            int pageSize)
         {
             var query = context.Products
                 .Include(p => p.Category)
@@ -60,6 +69,18 @@ namespace Amazon.Infrastructure.Repositories
             if (categoryId.HasValue)
             {
                 query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+            if (inStock.HasValue && inStock.Value)
+            {
+                query = query.Where(p => p.StockQuantity > 0);
             }
 
             query = (sortBy?.ToLower()) switch

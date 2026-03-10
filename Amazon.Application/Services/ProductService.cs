@@ -33,7 +33,18 @@ namespace Amazon.Application.Services
             var pageNumber = query.PageNumber <= 0 ? 1 : query.PageNumber;
             var pageSize = query.PageSize <= 0 ? 20 : query.PageSize;
             var desc = query.SortDir?.ToLower() == "desc";
-            var (items, total) = await productrepo.SearchAsync(query.Search, query.CategoryId, query.SortBy, desc, pageNumber, pageSize);
+            
+            var (items, total) = await productrepo.SearchAsync(
+                query.Search, 
+                query.CategoryId, 
+                query.MinPrice, 
+                query.MaxPrice, 
+                query.InStock, 
+                query.SortBy, 
+                desc, 
+                pageNumber, 
+                pageSize);
+
             return new PagedResult<ProductDTO>
             {
                 Items = mapper.Map<IEnumerable<ProductDTO>>(items),

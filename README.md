@@ -12,6 +12,9 @@
     - **Transactions**: Atomic checkout flow using `UnitOfWork`.
     - **Optimistic Concurrency**: `RowVersion` on Products to prevent race conditions.
     - **Order Lifecycle**: `OrderStatus` enum (Pending, Processing, etc.).
+  - **Enhanced Querying & Search**:
+    - Paged, filtered, and sorted product search.
+    - Advanced filters: Price range (`minPrice`/`maxPrice`) and availability (`inStock`).
   - Global exception handling returning ProblemDetails JSON
 
 ## Authentication API
@@ -68,6 +71,8 @@
     - `pageNumber` (default 1), `pageSize` (default 20)
     - `search` (filters by name contains, case-insensitive)
     - `categoryId` (optional filter by category)
+    - `minPrice` / `maxPrice` (optional price range filters)
+    - `inStock` (boolean, if true returns only products with stock > 0)
     - `sortBy` = `name` | `price`, `sortDir` = `asc` | `desc`
   - Filtering/sorting/paging is executed in the repository for performance
   - Returns a `PagedResult<ProductDTO>`: items, totalCount, pageNumber, pageSize
