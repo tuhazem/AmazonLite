@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +33,7 @@ namespace Amazon.Domain.Entities
 
         public void UpdatePrice(decimal newPrice) {
 
-            if (Price < 0) { 
+            if (newPrice < 0) { 
                 throw new ArgumentException("Price cannot be negative.");
             }
 

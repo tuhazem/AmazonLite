@@ -35,7 +35,7 @@ namespace Amazon.Infrastructure.Repositories
             return await context.Products.Include(p => p.Category).ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(int id)
+        public async Task<Product?> GetByIdAsync(int id)
         {
             return await context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
         }

@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amazon.Domain.Tests", "tests\Amazon.Domain.Tests\Amazon.Domain.Tests.csproj", "{BD52B336-97A0-4C96-847D-6771DC210CB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amazon.Application.Tests", "tests\Amazon.Application.Tests\Amazon.Application.Tests.csproj", "{3444037B-F13D-4985-B389-2D6297D0F7EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,11 +87,24 @@ Global
 		{BD52B336-97A0-4C96-847D-6771DC210CB0}.Release|x64.Build.0 = Release|Any CPU
 		{BD52B336-97A0-4C96-847D-6771DC210CB0}.Release|x86.ActiveCfg = Release|Any CPU
 		{BD52B336-97A0-4C96-847D-6771DC210CB0}.Release|x86.Build.0 = Release|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Debug|x64.Build.0 = Debug|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Debug|x86.Build.0 = Debug|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Release|x64.ActiveCfg = Release|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Release|x64.Build.0 = Release|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{3444037B-F13D-4985-B389-2D6297D0F7EA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BD52B336-97A0-4C96-847D-6771DC210CB0} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{3444037B-F13D-4985-B389-2D6297D0F7EA} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

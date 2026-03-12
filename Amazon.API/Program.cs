@@ -74,6 +74,22 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Seed database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AmazonDbContext>();
+        await DbInitializer.SeedAsync(context);
+    }
+    catch (Exception ex)
+    {
+        // Log the error (can add Serilog here later)
+        Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
