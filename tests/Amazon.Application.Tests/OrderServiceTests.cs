@@ -4,6 +4,7 @@ using Amazon.Application.Services;
 using Amazon.Domain.Entities;
 using Amazon.Domain.Interfaces;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using FluentAssertions;
@@ -17,6 +18,7 @@ namespace Amazon.Application.Tests
         private readonly Mock<IProductRepository> _productRepoMock;
         private readonly Mock<IUnitOfWork> _uowMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<ILogger<OrderService>> _loggerMock;
         private readonly OrderService _orderService;
 
         public OrderServiceTests()
@@ -26,12 +28,14 @@ namespace Amazon.Application.Tests
             _productRepoMock = new Mock<IProductRepository>();
             _uowMock = new Mock<IUnitOfWork>();
             _mapperMock = new Mock<IMapper>();
+            _loggerMock = new Mock<ILogger<OrderService>>();
             _orderService = new OrderService(
                 _orderRepoMock.Object, 
                 _cartRepoMock.Object, 
                 _productRepoMock.Object, 
                 _uowMock.Object, 
-                _mapperMock.Object);
+                _mapperMock.Object,
+                _loggerMock.Object);
         }
 
         [Fact]

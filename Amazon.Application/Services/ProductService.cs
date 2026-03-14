@@ -3,6 +3,7 @@ using Amazon.Application.Interfaces;
 using Amazon.Domain.Entities;
 using Amazon.Domain.Interfaces;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,21 +16,27 @@ namespace Amazon.Application.Services
     {
         private readonly IProductRepository productrepo;
         private readonly IMapper mapper;
+        private readonly ILogger<ProductService> _logger;
 
-        public ProductService(IProductRepository productrepo , IMapper mapper)
+        public ProductService(IProductRepository productrepo, IMapper mapper, ILogger<ProductService> logger)
         {
             this.productrepo = productrepo;
             this.mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<int> CreateProductAsync(CreateProductDTO product)
         {
+            _logger.LogInformation("Creating new product: {ProductName}", product.Name);
             var newproduct = mapper.Map<Product>(product);
             await productrepo.AddAsync(newproduct);
+            _logger.LogInformation("Product created successfully with Id: {ProductId}", newproduct.Id);
             return newproduct.Id;
         }
+
         public async Task<PagedResult<ProductDTO>> SearchProductsAsync(ProductListQuery query)
         {
+            _logger.LogInformation("Searching products with query: {@Query}", query);
             var pageNumber = query.PageNumber <= 0 ? 1 : query.PageNumber;
             var pageSize = query.PageSize <= 0 ? 20 : query.PageSize;
             var desc = query.SortDir?.ToLower() == "desc";
@@ -45,6 +52,8 @@ namespace Amazon.Application.Services
                 pageNumber, 
                 pageSize);
 
+            _logger.LogInformation("Search completed. Found {Count} items.", total);
+
             return new PagedResult<ProductDTO>
             {
                 Items = mapper.Map<IEnumerable<ProductDTO>>(items),
@@ -56,10 +65,16 @@ namespace Amazon.Application.Services
 
         public async Task DeleteProductAsync(int id)
         {
+            _logger.LogInformation("Deleting product: {ProductId}", id);
             var product = await productrepo.GetByIdAsync(id);
-            if(product == null) throw new KeyNotFoundException("Product not found");
+            if (product == null)
+            {
+                _logger.LogWarning("Delete failed: Product {ProductId} not found.", id);
+                throw new KeyNotFoundException("Product not found");
+            }
 
             productrepo.Delete(product);
+            _logger.LogInformation("Product {ProductId} deleted successfully.", id);
         }
 
         public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
@@ -76,11 +91,17 @@ namespace Amazon.Application.Services
 
         public async Task UpdateProductPriceAsync(int id, decimal newprice)
         {
+            _logger.LogInformation("Updating price for product {ProductId} to {NewPrice}", id, newprice);
             var product = await productrepo.GetByIdAsync(id);
-            if(product == null) throw new KeyNotFoundException("Product not found");
+            if (product == null)
+            {
+                _logger.LogWarning("Update price failed: Product {ProductId} not found.", id);
+                throw new KeyNotFoundException("Product not found");
+            }
 
             product.UpdatePrice(newprice);
             productrepo.Update(product);
+            _logger.LogInformation("Product {ProductId} price updated successfully.", id);
         }
     }
 }

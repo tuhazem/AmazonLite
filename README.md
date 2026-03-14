@@ -15,6 +15,10 @@
   - **Enhanced Querying & Search**:
     - Paged, filtered, and sorted product search.
     - Advanced filters: Price range (`minPrice`/`maxPrice`) and availability (`inStock`).
+  - **Logging & Observability**:
+    - Structured logging using **Serilog**.
+    - Console and daily rolling File sinks.
+    - Automatic request and error logging in middleware.
   - Global exception handling returning ProblemDetails JSON
 
 ## Authentication API

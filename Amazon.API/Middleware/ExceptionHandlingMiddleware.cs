@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,10 +11,12 @@ namespace Amazon.API.Middleware
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             this.next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -24,6 +27,8 @@ namespace Amazon.API.Middleware
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An unhandled exception occurred during the request.");
+
                 var status = 500;
                 var title = "An error occurred.";
 

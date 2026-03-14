@@ -15,16 +15,20 @@ namespace Amazon.API.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, IConfiguration configuration, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
+            _logger.LogInformation("Registering new user: {Email}", model.Email);
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = new ApplicationUser
@@ -38,8 +42,11 @@ namespace Amazon.API.Controllers
 
             if (result.Succeeded)
             {
+                _logger.LogInformation("User {Email} registered successfully.", model.Email);
                 return Ok(new { Message = "User registered successfully" });
             }
+
+            _logger.LogWarning("User registration failed for {Email}: {Errors}", model.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
 
             foreach (var error in result.Errors)
             {
@@ -52,12 +59,16 @@ namespace Amazon.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
+            _logger.LogInformation("Login attempt for user: {Email}", model.Email);
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
+                _logger.LogInformation("User {Email} logged in successfully.", model.Email);
+                
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName!),
@@ -84,6 +95,7 @@ namespace Amazon.API.Controllers
                 });
             }
 
+            _logger.LogWarning("Invalid login attempt for {Email}", model.Email);
             return Unauthorized();
         }
     }

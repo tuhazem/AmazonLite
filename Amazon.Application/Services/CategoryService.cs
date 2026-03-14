@@ -1,7 +1,9 @@
 using Amazon.Application.DTOs;
 using Amazon.Application.Interfaces;
 using Amazon.Domain.Entities;
+using Amazon.Domain.Interfaces;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,49 +14,70 @@ namespace Amazon.Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        public CategoryService(ICategoryRepository catrepo , IMapper mapper )
-        {
-            Catrepo = catrepo;
-            Mapper = mapper;
-        }
+        private readonly ICategoryRepository _catRepo;
+        private readonly IMapper _mapper;
+        private readonly ILogger<CategoryService> _logger;
 
-        public ICategoryRepository Catrepo { get; }
-        public IMapper Mapper { get; }
+        public CategoryService(ICategoryRepository catrepo, IMapper mapper, ILogger<CategoryService> logger)
+        {
+            _catRepo = catrepo;
+            _mapper = mapper;
+            _logger = logger;
+        }
 
         public async Task<int> AddAsync(CreateCategoryDTO category)
         {
-            var cat = Mapper.Map<Category>(category);
-            await Catrepo.AddAsync(cat);    
+            _logger.LogInformation("Adding new category: {CategoryName}", category.Name);
+            var cat = _mapper.Map<Category>(category);
+            await _catRepo.AddAsync(cat);    
+            _logger.LogInformation("Category created successfully with Id: {CategoryId}", cat.Id);
             return cat.Id;
         }
 
         public async Task Delete(int id)
         {
-            var cat = await Catrepo.GetByIdAsync(id);
-            if(cat == null) throw new KeyNotFoundException("Category not found");
-            if(cat.Products.Any()) throw new InvalidOperationException("Category has products and cannot be deleted");
-            Catrepo.Delete(cat);
+            _logger.LogInformation("Deleting category: {CategoryId}", id);
+            var cat = await _catRepo.GetByIdAsync(id);
+            if (cat == null)
+            {
+                _logger.LogWarning("Delete failed: Category {CategoryId} not found.", id);
+                throw new KeyNotFoundException("Category not found");
+            }
+            if (cat.Products.Any())
+            {
+                _logger.LogWarning("Delete failed: Category {CategoryId} has {ProductCount} products.", id, cat.Products.Count);
+                throw new InvalidOperationException("Category has products and cannot be deleted");
+            }
+
+            _catRepo.Delete(cat);
+            _logger.LogInformation("Category {CategoryId} deleted successfully.", id);
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetAllAsync()
         {
-            var cats = await Catrepo.GetAllAsync();
-            return Mapper.Map<IEnumerable<CategoryDTO>>(cats);
+            var cats = await _catRepo.GetAllAsync();
+            return _mapper.Map<IEnumerable<CategoryDTO>>(cats);
         }
 
         public async Task<CategoryDTO?> GetByIdAsync(int id)
         {
-            var cat = await Catrepo.GetByIdAsync(id);
-            return cat == null ? null : Mapper.Map<CategoryDTO>(cat);
+            var cat = await _catRepo.GetByIdAsync(id);
+            return cat == null ? null : _mapper.Map<CategoryDTO>(cat);
         }
 
         public async Task UpdateAsync(int id, UpdateCategoryDTO category)
         {
-            var cat = await Catrepo.GetByIdAsync(id);
-            if(cat == null) throw new KeyNotFoundException("Category not found");
+            _logger.LogInformation("Updating category {CategoryId} to {NewName}", id, category.Name);
+            var cat = await _catRepo.GetByIdAsync(id);
+            if (cat == null)
+            {
+                _logger.LogWarning("Update failed: Category {CategoryId} not found.", id);
+                throw new KeyNotFoundException("Category not found");
+            }
 
-            Mapper.Map(category, cat);
-            Catrepo.Update(cat);
+            _mapper.Map(category, cat);
+            _catRepo.Update(cat);
+            _logger.LogInformation("Category {CategoryId} updated successfully.", id);
         }
     }
 }
