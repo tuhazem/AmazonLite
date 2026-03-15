@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Serilog;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Amazon.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +79,8 @@ builder.Services.AddAutoMapper(typeof(CartProfile));
 builder.Services.AddAutoMapper(typeof(OrderProfile));
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

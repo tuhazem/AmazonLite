@@ -15,6 +15,9 @@
   - **Enhanced Querying & Search**:
     - Paged, filtered, and sorted product search.
     - Advanced filters: Price range (`minPrice`/`maxPrice`) and availability (`inStock`).
+  - **Validation & Data Integrity**:
+    - Advanced DTO validation using **FluentValidation**.
+    - Centralized validation logic outside of DTO classes.
   - **Logging & Observability**:
     - Structured logging using **Serilog**.
     - Console and daily rolling File sinks.
