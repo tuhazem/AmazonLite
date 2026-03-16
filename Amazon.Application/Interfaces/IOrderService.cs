@@ -6,7 +6,7 @@ namespace Amazon.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<OrderDTO> CheckoutAsync(int cartId);
+        Task<OrderDTO> CheckoutAsync(int cartId, string userEmail);
         Task<OrderDTO?> GetOrderAsync(int orderId);
         Task UpdateOrderStatusAsync(int orderId, OrderStatus status);
     }

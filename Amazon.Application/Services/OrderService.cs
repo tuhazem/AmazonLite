@@ -19,8 +19,9 @@ namespace Amazon.Application.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly ILogger<OrderService> _logger;
+        private readonly IEmailService _emailService;
 
-        public OrderService(IOrderRepository orderRepository, ICartRepository cartRepository, IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper, ILogger<OrderService> logger)
+        public OrderService(IOrderRepository orderRepository, ICartRepository cartRepository, IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper, ILogger<OrderService> logger, IEmailService emailService)
         {
             this.orderRepository = orderRepository;
             this.cartRepository = cartRepository;
@@ -28,11 +29,12 @@ namespace Amazon.Application.Services
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             _logger = logger;
+            _emailService = emailService;
         }
 
-        public async Task<OrderDTO> CheckoutAsync(int cartId)
+        public async Task<OrderDTO> CheckoutAsync(int cartId, string userEmail)
         {
-            _logger.LogInformation("Processing checkout for CartId: {CartId}", cartId);
+            _logger.LogInformation("Processing checkout for CartId: {CartId} by User: {UserEmail}", cartId, userEmail);
             await unitOfWork.BeginTransactionAsync();
             try
             {
@@ -68,6 +70,20 @@ namespace Amazon.Application.Services
 
                 await unitOfWork.CommitAsync();
                 _logger.LogInformation("Order {OrderId} successfully created for Cart {CartId}. Total: {Total}", order.Id, cartId, order.Total);
+
+                // Send Confirmation Email
+                try
+                {
+                    var subject = $"Order Confirmation #{order.Id}";
+                    var body = $"<h1>Thank you for your order!</h1><p>Your order #{order.Id} has been placed successfully.</p><p>Total Amount: {order.Total:C}</p>";
+                    await _emailService.SendEmailAsync(userEmail, subject, body);
+                    _logger.LogInformation("Confirmation email sent to {Email}", userEmail);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to send confirmation email to {Email}", userEmail);
+                    // We don't throw here because the order was already successfully placed
+                }
 
                 return mapper.Map<OrderDTO>(order);
             }

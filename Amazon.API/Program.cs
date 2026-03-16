@@ -3,6 +3,7 @@ using Amazon.Application.Services;
 using Amazon.Domain.Interfaces;
 using Amazon.Infrastructure.Persistence;
 using Amazon.Infrastructure.Repositories;
+using Amazon.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Amazon.Application.Interfaces;
@@ -72,6 +73,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 builder.Services.AddAutoMapper(typeof(CategoryProfile));
