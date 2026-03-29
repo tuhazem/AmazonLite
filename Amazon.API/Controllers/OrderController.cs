@@ -2,6 +2,7 @@ using Amazon.Application.Interfaces;
 using Amazon.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Amazon.API.Controllers
@@ -21,7 +22,11 @@ namespace Amazon.API.Controllers
         [HttpPost("checkout/{cartId}")]
         public async Task<IActionResult> Checkout(int cartId)
         {
-            var order = await orderService.CheckoutAsync(cartId);
+            var email = User.FindFirst(ClaimTypes.Email)?.Value ?? User.Identity?.Name;
+            if (string.IsNullOrEmpty(email))
+                return Unauthorized();
+
+            var order = await orderService.CheckoutAsync(cartId, email);
             return Ok(order);
         }
 
