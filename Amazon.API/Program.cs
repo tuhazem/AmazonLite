@@ -81,6 +81,16 @@ builder.Services.AddAutoMapper(typeof(CartProfile));
 builder.Services.AddAutoMapper(typeof(OrderProfile));
 
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
 builder.Services.AddEndpointsApiExplorer();
@@ -110,6 +120,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseMiddleware<Amazon.API.Middleware.ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
